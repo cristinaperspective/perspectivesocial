@@ -1,0 +1,31 @@
+# Perspective Social — Netlify config
+
+[build]
+  publish = "."
+
+# ── perspectivesocial.ie → perspectivesocial.com (301) ──
+[[redirects]]
+  from = "https://perspectivesocial.ie/*"
+  to = "https://perspectivesocial.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.perspectivesocial.ie/*"
+  to = "https://perspectivesocial.com/:splat"
+  status = 301
+  force = true
+
+# ── www.com → apex .com (301) ──
+[[redirects]]
+  from = "https://www.perspectivesocial.com/*"
+  to = "https://perspectivesocial.com/:splat"
+  status = 301
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
