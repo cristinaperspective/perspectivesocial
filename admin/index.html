@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perspective Social - Content Manager</title>
+<meta name="robots" content="noindex">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+<script>window.CMS_MANUAL_INIT=true;</script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<script>
+CMS.init({config:{backend:{name:"git-gateway",branch:"main"},media_folder:"images/uploads",public_folder:"images/uploads",collections:[{name:"site",label:"Site Content",files:[{name:"portfolio",label:"Portfolio / Clients",file:"data/portfolio.json",fields:[{label:"Clients",name:"clients",widget:"list",summary:"{{fields.name}}",fields:[{label:"Client Name",name:"name",widget:"string"},{label:"Display Order",name:"order",widget:"number",default:99,value_type:"int"},{label:"Services",name:"services",widget:"list",field:{label:"Service",name:"service",widget:"string"}},{label:"Description",name:"description",widget:"text"},{label:"Key Result - Number",name:"stat_value",widget:"string",required:false},{label:"Key Result - Label",name:"stat_label",widget:"string",required:false},{label:"Link",name:"link",widget:"string",required:false},{label:"Link Label",name:"link_label",widget:"string",required:false,default:"View Project"},{label:"Cover Image",name:"image",widget:"image",required:false}]}]},{name:"settings",label:"Site Settings",file:"data/settings.json",fields:[{label:"Contact Email",name:"contact_email",widget:"string"},{label:"Booking URL",name:"booking_url",widget:"string",required:false},{label:"Hero Subtitle",name:"hero_subtitle",widget:"text"}]}]}]}});
+if(window.netlifyIdentity){window.netlifyIdentity.on("init",function(u){if(!u){window.netlifyIdentity.on("login",function(){document.location.href="/admin/";});}});}
+</script>
+</body>
+</html>
