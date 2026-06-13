@@ -130,11 +130,11 @@
   /* TEAM */
   .team{background:var(--off-white);padding:104px 0;}
   .team-head{margin-bottom:54px;}
-  .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
   .team-card{text-align:center;}
-  .team-photo{aspect-ratio:1/1;border-radius:8px;background:var(--sage);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .team-photo .mono{font-family:'Anton',sans-serif;font-size:72px;color:var(--white);}
-  .team-photo img{width:100%;height:100%;object-fit:cover;}
+  .team-photo{position:relative;aspect-ratio:1/1;border-radius:8px;background:var(--sage);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .team-photo .mono{font-family:'Anton',sans-serif;font-size:64px;color:var(--white);}
+  .team-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .team-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;text-transform:uppercase;margin:18px 0 4px;}
   .team-card .role{font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);}
   .team-card .bio{margin-top:10px;font-size:14px;line-height:1.55;color:var(--charcoal);opacity:.8;}
@@ -159,7 +159,7 @@
     .testi-grid{grid-template-columns:1fr;}
     .services-grid{grid-template-columns:repeat(2,1fr);}
     .work-grid{grid-template-columns:1fr;}
-    .team-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}
+    .team-grid{grid-template-columns:repeat(2,1fr);max-width:560px;margin:0 auto;}
     .why-grid{grid-template-columns:1fr;}
   }
   @media(max-width:680px){
@@ -181,8 +181,8 @@
       <nav class="nav-links" id="navLinks">
         <a href="#services">Services</a>
         <a href="#work">Work</a>
-        <a href="#why">Why Us</a>
         <a href="#team">Team</a>
+        <a href="#why">Why Us</a>
         <a href="#contact">Contact</a>
         <a href="#contact" class="btn btn-primary js-book">Book a Call</a>
       </nav>
@@ -271,21 +271,6 @@
     </div>
   </section>
 
-  <!-- WHY US -->
-  <section class="why" id="why">
-    <div class="container">
-      <div class="why-head">
-        <p class="eyebrow">Why Perspective Social</p>
-        <h2 class="section-title">STOP POSTING.<br>START <span class="accent">CONVERTING.</span></h2>
-      </div>
-      <div class="why-grid">
-        <div class="why-card"><div class="no">01</div><h3>One Team, Every Channel</h3><p>No more juggling a freelancer for ads, another for content, a third for email. Strategy, production and distribution under one roof - every piece pulling in the same direction.</p></div>
-        <div class="why-card"><div class="no">02</div><h3>Ecommerce Natives</h3><p>We've built and run our own ecommerce stores and managed a Shopify Plus agency before this. We live in Shopify dashboards, ROAS reports and conversion funnels - your content isn't judged by likes, it's judged by what it sells.</p></div>
-        <div class="why-card"><div class="no">03</div><h3>Content With a Spine</h3><p>Founder stories, interviews and media with an actual point of view. The brands people remember are the ones that say something.</p></div>
-      </div>
-    </div>
-  </section>
-
   <!-- SERVICES -->
   <section class="services" id="services">
     <div class="container">
@@ -339,23 +324,44 @@
       </div>
       <div class="team-grid">
         <div class="team-card">
-          <div class="team-photo"><span class="mono">C</span></div>
+          <div class="team-photo"><span class="mono">C</span><img src="images/uploads/cristina.jpg" alt="Cristina Lupu" onerror="this.style.display='none'"></div>
           <h3>Cristina Lupu</h3>
           <div class="role">Co-Founder &amp; COO</div>
           <p class="bio">Ecommerce operator and content strategist. Built and ran her own stores and a Shopify Plus agency before Perspective Social.</p>
         </div>
         <div class="team-card">
-          <div class="team-photo"><span class="mono">D</span></div>
+          <div class="team-photo"><span class="mono">D</span><img src="images/uploads/dan.jpg" alt="Dan Nistor" onerror="this.style.display='none'"></div>
           <h3>Dan Nistor</h3>
           <div class="role">Co-Founder &amp; CEO</div>
           <p class="bio">Sets the vision, growth strategy and partnerships behind Perspective Social.</p>
         </div>
         <div class="team-card">
-          <div class="team-photo"><span class="mono">N</span></div>
+          <div class="team-photo"><span class="mono">N</span><img src="images/uploads/narbi.jpg" alt="Narbi Carcal" onerror="this.style.display='none'"></div>
           <h3>Narbi Carcal</h3>
           <div class="role">Social Media Manager</div>
           <p class="bio">Runs day-to-day content, scheduling and community across every channel.</p>
         </div>
+        <div class="team-card">
+          <div class="team-photo"><span class="mono">B</span><img src="images/uploads/boba.jpg" alt="Boba" onerror="this.style.display='none'"></div>
+          <h3>Boba</h3>
+          <div class="role">COO's Assistant</div>
+          <p class="bio">In charge of keeping Cristina sane. Chief morale officer and full-time good girl.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why" id="why">
+    <div class="container">
+      <div class="why-head">
+        <p class="eyebrow">Why Perspective Social</p>
+        <h2 class="section-title">STOP POSTING.<br>START <span class="accent">CONVERTING.</span></h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card"><div class="no">01</div><h3>One Team, Every Channel</h3><p>No more juggling a freelancer for ads, another for content, a third for email. Strategy, production and distribution under one roof - every piece pulling in the same direction.</p></div>
+        <div class="why-card"><div class="no">02</div><h3>Ecommerce Natives</h3><p>We've built and run our own ecommerce stores and managed a Shopify Plus agency before this. We live in Shopify dashboards, ROAS reports and conversion funnels - your content isn't judged by likes, it's judged by what it sells.</p></div>
+        <div class="why-card"><div class="no">03</div><h3>Content With a Spine</h3><p>Founder stories, interviews and media with an actual point of view. The brands people remember are the ones that say something.</p></div>
       </div>
     </div>
   </section>
