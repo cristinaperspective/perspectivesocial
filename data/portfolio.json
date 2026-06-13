@@ -1,1 +1,19 @@
-{"clients":[{"name":"Ristlin","order":1,"services":["SMM","Content","Brand Strategy"],"description":"Emotional expression and mental health-driven ecommerce brand. Full social media management, content strategy and storytelling for Instagram - built around authenticity, not trends.","link":"https://www.instagram.com/ristlin.ro","link_label":"View on Instagram","image":"","stat_value":"","stat_label":""}]}
+{
+  "clients": [
+    {
+      "stat_value": "",
+      "stat_label": "",
+      "name": "Ristlin",
+      "order": 1,
+      "link_label": "View on Instagram",
+      "link": "https://www.instagram.com/ristlin.ro",
+      "image": "images/uploads/screenshot-2026-06-14-at-00.15.32.png",
+      "description": "Emotional expression and mental health-driven ecommerce brand. Full social media management, content strategy and storytelling for Instagram - built around authenticity, not trends.",
+      "services": [
+        "SMM",
+        "Content",
+        "Brand Strategy"
+      ]
+    }
+  ]
+}
