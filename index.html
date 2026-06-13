@@ -30,7 +30,7 @@
   .nav{position:sticky;top:0;z-index:50;background:rgba(245,240,236,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(22,26,23,0.08);}
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;}
   .logo{font-family:'Anton',sans-serif;font-size:20px;letter-spacing:0.02em;text-transform:uppercase;}
-  .logo .dot{color:var(--orange);}
+  .logo .mark{color:var(--orange);}
   .nav-links{display:flex;align-items:center;gap:34px;}
   .nav-links a{font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;transition:color .2s;}
   .nav-links a:hover{color:var(--orange);}
@@ -94,6 +94,15 @@
   .partners-row{display:flex;align-items:center;justify-content:center;gap:clamp(24px,5vw,56px);flex-wrap:wrap;}
   .partners-row .p{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(20px,2.6vw,30px);text-transform:uppercase;letter-spacing:0.06em;color:rgba(245,240,236,0.62);}
 
+  /* WHY US */
+  .why{background:var(--off-white);padding:104px 0;border-top:1px solid rgba(22,26,23,0.08);}
+  .why-head{margin-bottom:54px;}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .why-card{background:var(--white);border:1px solid rgba(22,26,23,0.08);border-radius:6px;padding:34px 30px;}
+  .why-card .no{font-family:'Anton',sans-serif;font-size:20px;color:var(--orange);}
+  .why-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;text-transform:uppercase;letter-spacing:0.02em;margin:14px 0 12px;line-height:1.05;}
+  .why-card p{font-size:14px;line-height:1.6;color:var(--charcoal);opacity:.82;}
+
   /* SERVICES */
   .services{background:var(--off-white);padding:104px 0;}
   .services-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:54px;flex-wrap:wrap;}
@@ -151,6 +160,7 @@
     .services-grid{grid-template-columns:repeat(2,1fr);}
     .work-grid{grid-template-columns:1fr;}
     .team-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}
+    .why-grid{grid-template-columns:1fr;}
   }
   @media(max-width:680px){
     .nav-links{position:fixed;inset:72px 0 auto 0;background:var(--off-white);flex-direction:column;gap:0;padding:8px 0 20px;border-bottom:1px solid rgba(22,26,23,0.1);transform:translateY(-130%);transition:transform .28s;align-items:stretch;}
@@ -167,10 +177,11 @@
   <!-- NAV -->
   <header class="nav">
     <div class="container nav-inner">
-      <a href="#top" class="logo">PERSPECTIVE SOCIAL<span class="dot">.</span></a>
+      <a href="#top" class="logo">Perspective <span class="mark">Social</span></a>
       <nav class="nav-links" id="navLinks">
         <a href="#services">Services</a>
         <a href="#work">Work</a>
+        <a href="#why">Why Us</a>
         <a href="#team">Team</a>
         <a href="#contact">Contact</a>
         <a href="#contact" class="btn btn-primary js-book">Book a Call</a>
@@ -213,18 +224,9 @@
         <span class="pub serif">Forbes</span>
         <span class="pub serif">The Irish Times</span>
         <span class="pub serif">Irish Independent</span>
-        <span class="pub" style="font-family:'Bodoni MT',Didot,Georgia,serif;letter-spacing:0.12em;">VOGUE</span>
+        <span class="pub">RTÉ</span>
+        <span class="pub serif">Business Post</span>
       </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <section class="stats">
-    <div class="container stats-grid">
-      <div class="stat"><div class="num">372</div><div class="lbl">Articles Placed</div></div>
-      <div class="stat"><div class="num">7</div><div class="lbl">Events Hosted</div></div>
-      <div class="stat"><div class="num">4</div><div class="lbl">National Titles</div></div>
-      <div class="stat"><div class="num">100%</div><div class="lbl">Founder-Led</div></div>
     </div>
   </section>
 
@@ -265,6 +267,21 @@
         <span class="p">Partner Three</span>
         <span class="p">Partner Four</span>
         <span class="p">Partner Five</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why" id="why">
+    <div class="container">
+      <div class="why-head">
+        <p class="eyebrow">Why Perspective Social</p>
+        <h2 class="section-title">STOP POSTING.<br>START <span class="accent">CONVERTING.</span></h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card"><div class="no">01</div><h3>One Team, Every Channel</h3><p>No more juggling a freelancer for ads, another for content, a third for email. Strategy, production and distribution under one roof - every piece pulling in the same direction.</p></div>
+        <div class="why-card"><div class="no">02</div><h3>Ecommerce Natives</h3><p>We've built and run our own ecommerce stores and managed a Shopify Plus agency before this. We live in Shopify dashboards, ROAS reports and conversion funnels - your content isn't judged by likes, it's judged by what it sells.</p></div>
+        <div class="why-card"><div class="no">03</div><h3>Content With a Spine</h3><p>Founder stories, interviews and media with an actual point of view. The brands people remember are the ones that say something.</p></div>
       </div>
     </div>
   </section>
@@ -328,16 +345,16 @@
           <p class="bio">Ecommerce operator and content strategist. Built and ran her own stores and a Shopify Plus agency before Perspective Social.</p>
         </div>
         <div class="team-card">
-          <div class="team-photo"><span class="mono">+</span></div>
-          <h3>Team Member</h3>
+          <div class="team-photo"><span class="mono">D</span></div>
+          <h3>Dan Nistor</h3>
           <div class="role">Co-Founder &amp; CEO</div>
-          <p class="bio">Add name, role and short bio. Send me a photo and details and I'll drop them in.</p>
+          <p class="bio">Sets the vision, growth strategy and partnerships behind Perspective Social.</p>
         </div>
         <div class="team-card">
-          <div class="team-photo"><span class="mono">+</span></div>
-          <h3>Team Member</h3>
-          <div class="role">Role</div>
-          <p class="bio">Add name, role and short bio. Send me a photo and details and I'll drop them in.</p>
+          <div class="team-photo"><span class="mono">N</span></div>
+          <h3>Narbi Carcal</h3>
+          <div class="role">Social Media Manager</div>
+          <p class="bio">Runs day-to-day content, scheduling and community across every channel.</p>
         </div>
       </div>
     </div>
@@ -358,7 +375,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
-        <span class="logo">PERSPECTIVE SOCIAL<span class="dot" style="color:var(--orange);">.</span></span>
+        <span class="logo">Perspective <span class="mark">Social</span></span>
         <span class="footer-tag">SMM &middot; Content &middot; Digital PR &middot; Newsletters &middot; Podcasts</span>
       </div>
       <div class="footer-bottom">
