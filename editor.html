@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perspective Social — Site Editor</title>
+<style>
+  :root{--lime:#C8FF00;--base:#09070F;--bg:#100E1A;--surface:#16142A;--surface-2:#1E1C30;--border:#2E2C42;--text:#E6EDF3;--dim:#8B8FA8;--mono:'JetBrains Mono',ui-monospace,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--base);color:var(--text);font-family:var(--sans);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  .bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .brand{font-family:var(--mono);font-weight:700;font-size:15px}.brand b{color:var(--lime)}
+  .spacer{flex:1}
+  .btn{font:600 13px/1 var(--sans);padding:9px 15px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:.15s;text-decoration:none;display:inline-flex;align-items:center}
+  .btn:hover{border-color:#3a3852}
+  .btn.primary{background:var(--lime);color:var(--base);border-color:var(--lime)}
+  .status{font:12px/1 var(--mono);color:var(--dim);min-width:90px}
+  .hint{font-size:12px;color:var(--dim);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px}
+  .hint b{color:var(--lime)}
+  .stage{flex:1;position:relative;background:#000;overflow:hidden}
+  iframe{width:100%;height:100%;border:0;background:var(--base)}
+  .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);color:var(--dim);font-size:14px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;width:min(520px,92vw);max-height:90vh;overflow:auto}
+  .modal h2{font-family:var(--mono);font-size:18px;margin-bottom:6px}
+  .modal p{font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:18px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px}
+  .field input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--base);color:var(--text);font:13px var(--mono)}
+  .field small{display:block;color:var(--dim);font-size:11px;margin-top:6px;line-height:1.5}.field small a{color:var(--lime)}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+  .log{font:12px/1.5 var(--mono);color:var(--dim);background:var(--base);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:14px;max-height:160px;overflow:auto;white-space:pre-wrap;display:none}
+  .log.show{display:block}.ok{color:var(--lime)}.err{color:#FF7B72}
+  #login{position:fixed;inset:0;z-index:300;background:var(--base);display:flex;align-items:center;justify-content:center}
+  #login .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:min(380px,92vw);text-align:center}
+  #login .lk{font-family:var(--mono);font-weight:700;font-size:20px;margin-bottom:6px}#login .lk b{color:var(--lime)}
+  #login p{font-size:13px;color:var(--dim);margin-bottom:20px}
+  #login input{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--border);background:var(--base);color:var(--text);font:14px var(--mono);text-align:center;margin-bottom:12px}
+  #login button{width:100%;padding:12px;border-radius:8px;border:0;background:var(--lime);color:var(--base);font-weight:700;cursor:pointer}
+  #login .err2{color:#FF7B72;font-size:12px;height:16px;margin-top:10px}
+  @media(max-width:760px){.hint{display:none}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="card">
+    <div class="lk">Perspective<b>Social</b></div>
+    <p>Enter the editor password</p>
+    <input type="password" id="pw" placeholder="password" autofocus>
+    <button id="pwBtn">Unlock</button>
+    <div class="err2" id="pwErr"></div>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="brand">Perspective<b>Social</b> · Editor</div>
+  <span class="hint">Click <b>text</b> to edit · click a <b>photo</b> to replace · hover a <b>card/section</b> for ↑↓ ⧉ 🗑 · <b>+ Add</b></span>
+  <span class="spacer"></span>
+  <span class="status" id="status">loading…</span>
+  <button class="btn" id="btnLinks">Links</button>
+  <button class="btn" id="btnReload">Reload live</button>
+  <button class="btn" id="btnDownload">Download</button>
+  <button class="btn" id="btnSettings">⚙ Settings</button>
+  <button class="btn primary" id="btnPublish">Publish ↑</button>
+</div>
+
+<div class="stage">
+  <iframe id="frame" title="site preview"></iframe>
+  <div class="loading" id="loading">Loading your live site…</div>
+</div>
+
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <h2>Publish settings</h2>
+    <p>Paste a GitHub token (fine-grained, Contents: Read &amp; Write on this repo). Stored only in this browser, sent only to GitHub. You can always use “Download” instead.</p>
+    <div class="field"><label>GitHub token</label><input type="password" id="tokenInput" placeholder="github_pat_…">
+      <small>Create at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">github.com fine-grained tokens</a>. Repo access: this repo. Permission: Contents → Read and write.</small></div>
+    <div class="field"><label>Repository owner</label><input id="ownerInput"></div>
+    <div class="field"><label>Repository name</label><input id="repoInput"></div>
+    <div class="field"><label>Branch</label><input id="branchInput"></div>
+    <div class="modal-actions"><button class="btn" id="settingsCancel">Cancel</button><button class="btn primary" id="settingsSave">Save</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="linksModal">
+  <div class="modal">
+    <h2>Links</h2>
+    <p>Update a link everywhere it appears on the page.</p>
+    <div class="field"><label>Find links containing</label><input id="linkFind" placeholder="e.g. calendar.app.google or mailto:"></div>
+    <div class="field"><label>Replace with</label><input id="linkReplace" placeholder="https://…"></div>
+    <div class="modal-actions"><button class="btn" id="linksCancel">Cancel</button><button class="btn primary" id="linksApply">Apply</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="publishModal">
+  <div class="modal">
+    <h2>Publishing</h2>
+    <p>Saving changes to the live site. Usually under a minute to appear.</p>
+    <div class="log show" id="publishLog"></div>
+    <div class="modal-actions"><button class="btn" id="publishClose">Close</button></div>
+  </div>
+</div>
+
+<input type="file" id="imgPicker" accept="image/*" style="display:none">
+
+<script>
+const $=id=>document.getElementById(id);
+const frame=$('frame');
+const PW_HASH='feb99c39cad9d87fc2beda9ea03f98251af351c7795a222621d14e857fc647dc'; // LabsCircle2026
+let changedImages={}; let pendingImgEl=null;
+
+// ===== CONFIG (defaults for THIS site) =====
+const DEF={owner:'cristinaperspective', repo:'perspectivesocial', branch:'main'};
+function cfg(){return{token:localStorage.getItem('pl_token')||'',owner:localStorage.getItem('pl_owner')||DEF.owner,repo:localStorage.getItem('pl_repo')||DEF.repo,branch:localStorage.getItem('pl_branch')||DEF.branch};}
+function setStatus(t){$('status').textContent=t;}
+const RAW=name=>`https://raw.githubusercontent.com/${cfg().owner}/${cfg().repo}/${cfg().branch}/${name}?cb=${Date.now()}`;
+
+const EDIT_STYLE=`
+  [data-ple]{outline:1px dashed transparent;outline-offset:2px;transition:outline-color .12s;cursor:text}
+  [data-ple]:hover{outline-color:rgba(200,255,0,.55)}
+  [data-ple]:focus{outline:2px solid #C8FF00 !important;border-radius:3px}
+  [data-plimg]{cursor:pointer}
+  [data-plimg]:hover{outline:3px solid #C8FF00;outline-offset:-3px}
+  [data-plitem]{position:relative !important}
+  [data-plsec]{position:relative !important}
+  .pl-ui,.pl-sec{position:absolute;display:flex;gap:4px;z-index:2147483000;opacity:0;transition:opacity .12s}
+  .pl-ui{top:4px;right:4px}.pl-sec{top:6px;left:6px}
+  [data-plitem]:hover>.pl-ui,[data-plsec]:hover>.pl-sec{opacity:1}
+  .pl-ui button,.pl-sec button{font:600 11px/1 sans-serif;border:1px solid #2E2C42;border-radius:5px;padding:5px 7px;cursor:pointer;background:#16142A;color:#E6EDF3}
+  .pl-ui button:hover,.pl-sec button:hover{border-color:#C8FF00;color:#C8FF00}
+  .pl-ui .pl-del:hover,.pl-sec .pl-del:hover{border-color:#FF7B72;color:#FF7B72}
+  .pl-add{display:block;margin:14px auto;font:700 12px/1 sans-serif;background:#C8FF00;color:#09070F;border:0;border-radius:6px;padding:9px 16px;cursor:pointer}
+  .pl-imgtag{position:absolute;top:6px;left:6px;background:#C8FF00;color:#09070F;font:600 11px/1 sans-serif;padding:5px 9px;border-radius:6px;z-index:2147483000;pointer-events:none}`;
+
+const BLOCK='h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,td,th,dt,dd,summary';
+
+async function loadSite(){
+  $('loading').style.display='flex'; setStatus('loading…'); changedImages={};
+  try{ const r=await fetch(RAW('index.html')); if(!r.ok)throw new Error('HTTP '+r.status); frame.srcdoc=await r.text(); }
+  catch(e){ setStatus('load failed'); $('loading').textContent='Could not load the live site.'; }
+}
+frame.addEventListener('load',()=>{
+  const doc=frame.contentDocument; if(!doc||!doc.body) return;
+  if(doc.body.children.length<2) return; // not real content yet
+  if(!doc.getElementById('pl-style')){const st=doc.createElement('style');st.id='pl-style';st.textContent=EDIT_STYLE;doc.head.appendChild(st);}
+  injectAll(doc);
+  $('loading').style.display='none'; setStatus('ready to edit');
+});
+
+function mk(el){el.setAttribute('contenteditable','true');el.setAttribute('data-ple','1');}
+function markText(doc){
+  doc.querySelectorAll(BLOCK).forEach(el=>{ if(el.hasAttribute('data-ple'))return; if(el.closest('.pl-ui,.pl-sec'))return; if(el.textContent.trim()) mk(el); });
+  doc.querySelectorAll('a,button').forEach(el=>{ if(el.hasAttribute('data-ple'))return; if(el.closest('[data-ple]')||el.closest('.pl-ui,.pl-sec'))return; if(el.querySelector('img,svg'))return; if(el.textContent.trim()) mk(el); });
+  doc.querySelectorAll('span,div').forEach(el=>{ if(el.hasAttribute('data-ple'))return; if(el.children.length===0 && el.textContent.trim() && !el.closest('[data-ple]') && !el.closest('.pl-ui,.pl-sec')) mk(el); });
+}
+function setupImg(doc,img){
+  const src=img.getAttribute('src')||'';
+  if(/^(https?:)?\/\//i.test(src)||/^data:/.test(src)) return; // external/data — not a repo file
+  const path=src.replace(/^\.?\//,'').split('?')[0];
+  img.setAttribute('data-plimg','1'); img.setAttribute('data-plsrc',src); img.setAttribute('data-plname',path);
+  let wrap=img.parentElement;
+  if(wrap && getComputedStyle(wrap).position==='static') wrap.style.position='relative';
+  if(wrap && !wrap.querySelector('.pl-imgtag')){const t=doc.createElement('div');t.className='pl-imgtag';t.textContent='Replace';wrap.appendChild(t);}
+  img.addEventListener('click',()=>{ pendingImgEl=img; $('imgPicker').click(); });
+}
+function mkbtn(doc,label,cls,fn){const b=doc.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();fn();});return b;}
+function addItemUI(doc,it,wrap,tag,cls){
+  it.setAttribute('data-plitem','1');
+  const bar=doc.createElement('div');bar.className='pl-ui';bar.setAttribute('contenteditable','false');
+  const same=el=>el&&el.tagName===tag&&el.className===cls;
+  bar.appendChild(mkbtn(doc,'↑','',()=>{const p=it.previousElementSibling;if(same(p))wrap.insertBefore(it,p);}));
+  bar.appendChild(mkbtn(doc,'↓','',()=>{const n=it.nextElementSibling;if(same(n))wrap.insertBefore(n,it);}));
+  bar.appendChild(mkbtn(doc,'⧉','',()=>dup(doc,it)));
+  bar.appendChild(mkbtn(doc,'🗑','pl-del',()=>{if(confirm('Delete this item?'))it.remove();}));
+  it.appendChild(bar);
+}
+function addSecUI(doc,sec){
+  sec.setAttribute('data-plsec','1');
+  const bar=doc.createElement('div');bar.className='pl-sec';bar.setAttribute('contenteditable','false');
+  bar.appendChild(mkbtn(doc,'↑ section','',()=>moveSec(sec,-1)));
+  bar.appendChild(mkbtn(doc,'↓ section','',()=>moveSec(sec,1)));
+  bar.appendChild(mkbtn(doc,'🗑 section','pl-del',()=>{if(confirm('Remove this whole section?'))sec.remove();}));
+  sec.appendChild(bar);
+}
+function moveSec(sec,d){let s=d<0?sec.previousElementSibling:sec.nextElementSibling;while(s&&s.tagName!=='SECTION')s=d<0?s.previousElementSibling:s.nextElementSibling;if(!s)return;if(d<0)sec.parentNode.insertBefore(sec,s);else sec.parentNode.insertBefore(s,sec);}
+function detectGroups(doc){
+  doc.querySelectorAll('*').forEach(c=>{
+    if(c.hasAttribute('data-plgrp'))return; if(c.closest('.pl-ui,.pl-sec'))return;
+    const kids=[...c.children].filter(k=>k.nodeType===1 && !k.classList.contains('pl-add'));
+    if(kids.length<3) return;
+    const tag=kids[0].tagName, cls=kids[0].className;
+    if(typeof cls!=='string'||!cls.trim()) return;
+    if(!kids.every(k=>k.tagName===tag && k.className===cls)) return;
+    c.setAttribute('data-plgrp','1');
+    kids.forEach(it=>{ if(!it.hasAttribute('data-plitem')) addItemUI(doc,it,c,tag,cls); });
+    if(!c.nextElementSibling || !c.nextElementSibling.classList || !c.nextElementSibling.classList.contains('pl-add')){
+      const add=doc.createElement('button');add.className='pl-add';add.type='button';add.textContent='+ Add';
+      add.addEventListener('click',()=>{const last=[...c.children].filter(k=>k.tagName===tag&&k.className===cls).pop();if(!last)return;const cl=last.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');c.appendChild(cl);injectAll(doc);});
+      c.insertAdjacentElement('afterend',add);
+    }
+  });
+}
+function injectAll(doc){
+  markText(doc);
+  if(!doc.body.hasAttribute('data-pllinks')){doc.body.setAttribute('data-pllinks','1');doc.body.addEventListener('click',e=>{const a=e.target.closest('a');if(a)e.preventDefault();},true);}
+  doc.querySelectorAll('img').forEach(img=>{if(!img.hasAttribute('data-plimg')&&!img.hasAttribute('data-plskip')){setupImg(doc,img);if(!img.hasAttribute('data-plimg'))img.setAttribute('data-plskip','1');}});
+  doc.querySelectorAll('section').forEach(sec=>{if(!sec.hasAttribute('data-plsec'))addSecUI(doc,sec);});
+  detectGroups(doc);
+}
+function dup(doc,it){const cl=it.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');it.after(cl);injectAll(doc);}
+$('imgPicker').addEventListener('change',e=>{const f=e.target.files[0];if(!f||!pendingImgEl)return;const r=new FileReader();r.onload=()=>{const name=pendingImgEl.getAttribute('data-plname');pendingImgEl.src=r.result;changedImages[name]=r.result;setStatus('photo staged');};r.readAsDataURL(f);e.target.value='';});
+
+function strip(root,forClone){
+  root.querySelectorAll('.pl-ui,.pl-sec,.pl-add,.pl-imgtag').forEach(n=>n.remove());
+  root.querySelectorAll('[data-plimg]').forEach(img=>{const s=img.getAttribute('data-plsrc');if(s!==null)img.setAttribute('src',s);img.removeAttribute('data-plimg');img.removeAttribute('data-plsrc');img.removeAttribute('data-plname');});
+  root.querySelectorAll('[data-plskip]').forEach(e=>e.removeAttribute('data-plskip'));
+  root.querySelectorAll('[data-ple]').forEach(e=>{e.removeAttribute('contenteditable');e.removeAttribute('data-ple');});
+  root.querySelectorAll('[data-plitem]').forEach(e=>e.removeAttribute('data-plitem'));
+  root.querySelectorAll('[data-plsec]').forEach(e=>e.removeAttribute('data-plsec'));
+  root.querySelectorAll('[data-plgrp]').forEach(e=>e.removeAttribute('data-plgrp'));
+  root.querySelectorAll('[style]').forEach(e=>{ if(e.style.position==='relative' && e.getAttribute('style').trim()==='position: relative;') e.removeAttribute('style'); });
+}
+function serialize(){
+  const doc=frame.contentDocument; const clone=doc.documentElement.cloneNode(true);
+  const st=clone.querySelector('#pl-style'); if(st)st.remove();
+  const b=clone.querySelector('body'); if(b)b.removeAttribute('data-pllinks');
+  strip(clone,false);
+  return '<!DOCTYPE html>\n'+clone.outerHTML;
+}
+$('btnDownload').addEventListener('click',()=>{const bl=new Blob([serialize()],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='index.html';a.click();setStatus('downloaded');});
+
+$('btnLinks').addEventListener('click',()=>show('linksModal'));
+$('linksApply').addEventListener('click',()=>{const doc=frame.contentDocument;const f=$('linkFind').value.trim();const rep=$('linkReplace').value.trim();if(!f||!rep){hide('linksModal');return;}let n=0;doc.querySelectorAll('a[href]').forEach(a=>{if(a.getAttribute('href').includes(f)){a.setAttribute('href',rep);n++;}});hide('linksModal');setStatus(n+' link(s) updated');});
+
+$('btnSettings').addEventListener('click',()=>{const c=cfg();$('tokenInput').value=c.token;$('ownerInput').value=c.owner;$('repoInput').value=c.repo;$('branchInput').value=c.branch;show('settingsModal');});
+$('settingsSave').addEventListener('click',()=>{localStorage.setItem('pl_token',$('tokenInput').value.trim());localStorage.setItem('pl_owner',$('ownerInput').value.trim());localStorage.setItem('pl_repo',$('repoInput').value.trim());localStorage.setItem('pl_branch',$('branchInput').value.trim());hide('settingsModal');setStatus('settings saved');});
+
+const API=p=>`https://api.github.com/repos/${cfg().owner}/${cfg().repo}/${p}`;
+function gh(p,o={}){return fetch(API(p),{...o,headers:{'Authorization':'Bearer '+cfg().token,'Accept':'application/vnd.github+json',...(o.headers||{})}});}
+function logp(m,c=''){const l=$('publishLog');l.innerHTML+=`<span class="${c}">${m}</span>\n`;l.scrollTop=l.scrollHeight;}
+function b64utf8(s){return btoa(unescape(encodeURIComponent(s)));}
+function apiPath(p){return p.split('/').map(encodeURIComponent).join('/');}
+async function getSha(p){const r=await gh(`contents/${apiPath(p)}?ref=${cfg().branch}`);if(r.status===200)return (await r.json()).sha;return null;}
+async function put(p,b64,msg){const sha=await getSha(p);const body={message:msg,content:b64,branch:cfg().branch};if(sha)body.sha=sha;const r=await gh(`contents/${apiPath(p)}`,{method:'PUT',body:JSON.stringify(body)});if(!r.ok)throw new Error(p+': '+r.status+' '+(await r.text()).slice(0,120));}
+$('btnPublish').addEventListener('click',async()=>{
+  if(!cfg().token){alert('Add a GitHub token in ⚙ Settings first (or use Download).');$('btnSettings').click();return;}
+  $('publishLog').innerHTML='';show('publishModal');
+  try{setStatus('publishing…');
+    for(const name of Object.keys(changedImages)){logp('Uploading '+name+' …');await put(name,changedImages[name].split(',')[1],'Update '+name+' via editor');logp('  ✓ '+name,'ok');}
+    logp('Saving page …');await put('index.html',b64utf8(serialize()),'Update site via editor');logp('  ✓ index.html','ok');
+    logp('\nDone! Live in ~1 minute.','ok');setStatus('published ✓');changedImages={};
+  }catch(e){logp('\nError: '+e.message,'err');logp('Check the token has Contents → Read & write on this repo.','err');setStatus('publish failed');}
+});
+
+function show(id){$(id).classList.add('show');}function hide(id){$(id).classList.remove('show');}
+$('settingsCancel').onclick=()=>hide('settingsModal');$('linksCancel').onclick=()=>hide('linksModal');$('publishClose').onclick=()=>hide('publishModal');
+$('btnReload').onclick=()=>{if(confirm('Reload from live? Unsaved edits lost.'))loadSite();};
+
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function tryLogin(){const h=await sha256($('pw').value);if(h===PW_HASH){sessionStorage.setItem('pl_auth','1');$('login').style.display='none';loadSite();}else{$('pwErr').textContent='Wrong password';$('pw').value='';}}
+$('pwBtn').onclick=tryLogin;$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+if(sessionStorage.getItem('pl_auth')==='1'){$('login').style.display='none';loadSite();}
+</script>
+</body>
+</html>
