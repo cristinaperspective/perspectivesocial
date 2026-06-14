@@ -413,7 +413,7 @@
       var clients=d.clients.slice().sort(function(a,b){return (a.order||99)-(b.order||99);});
       var html=clients.map(function(c){
         var tags=(c.services||[]).map(function(s){return '<span>'+s+'</span>';}).join('');
-        var img=c.image?'<div class="thumb"><img src="'+c.image+'" alt="'+c.name+'" onerror="this.parentNode.style.display=\'none\'"></div>':'';
+        var img=c.image?'<div class="thumb"><img src="'+c.image+'" alt="'+c.name+'" onerror="this.parentNode.style.display=\'none\'"></div>':'<div class="thumb"></div>';
         var link=c.link?'<a href="'+c.link+'" target="_blank" rel="noopener" class="work-link">'+(c.link_label||'View Project')+' &rarr;</a>':'';
         return '<div class="work-card">'+img+'<div class="body"><div class="work-tags">'+tags+'</div><h3>'+c.name+'</h3><p>'+(c.description||'')+'</p>'+link+'</div></div>';
       }).join('');
