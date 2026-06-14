@@ -7,12 +7,27 @@
       "order": 1,
       "link_label": "View on Instagram",
       "link": "https://www.instagram.com/ristlin.ro",
-      "image": "images/uploads/captură-de-ecran-din-2026-06-14-la-00.37.13.png",
+      "image": "images/uploads/captură-de-ecran-din-2026-06-14-la-00.37.13.png",
       "description": "Emotional expression and mental health-driven ecommerce brand. Full social media management, content strategy and storytelling for Instagram - built around authenticity, not trends.",
       "services": [
         "SMM",
         "Content",
         "Brand Strategy"
+      ]
+    },
+    {
+      "stat_value": "",
+      "stat_label": "",
+      "name": "Pilot Lifestyle",
+      "order": 2,
+      "link_label": "View on Instagram",
+      "link": "https://www.instagram.com/pilot_lifestyle",
+      "image": "",
+      "description": "Aviation mentorship brand teaching people how to become professional pilots. Social media management and content built to grow and engage a 17K+ community of aviation enthusiasts.",
+      "services": [
+        "SMM",
+        "Content",
+        "Community"
       ]
     }
   ]
