@@ -224,7 +224,7 @@ $('imgPicker').addEventListener('change',e=>{const f=e.target.files[0];if(!f||!p
 
 function strip(root,forClone){
   root.querySelectorAll('.pl-ui,.pl-sec,.pl-add,.pl-imgtag').forEach(n=>n.remove());
-  root.querySelectorAll('[data-plimg]').forEach(img=>{const s=img.getAttribute('data-plsrc');if(s!==null)img.setAttribute('src',s);img.removeAttribute('data-plimg');img.removeAttribute('data-plsrc');img.removeAttribute('data-plname');});
+  root.querySelectorAll('[data-plimg]').forEach(img=>{const s=img.getAttribute('data-plsrc');const nm=img.getAttribute('data-plname');if(s!==null){let out=s;if(nm&&changedImages[nm])out=s.split('?')[0]+'?v='+Date.now();img.setAttribute('src',out);}img.removeAttribute('data-plimg');img.removeAttribute('data-plsrc');img.removeAttribute('data-plname');});
   root.querySelectorAll('[data-plskip]').forEach(e=>e.removeAttribute('data-plskip'));
   root.querySelectorAll('[data-ple]').forEach(e=>{e.removeAttribute('contenteditable');e.removeAttribute('data-ple');});
   root.querySelectorAll('[data-plitem]').forEach(e=>e.removeAttribute('data-plitem'));
