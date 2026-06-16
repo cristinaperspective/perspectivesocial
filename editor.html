@@ -17,8 +17,8 @@
   .status{font:12px/1 var(--mono);color:var(--dim);min-width:90px}
   .hint{font-size:12px;color:var(--dim);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px}
   .hint b{color:var(--lime)}
-  .stage{flex:1;position:relative;background:#000;overflow:hidden}
-  iframe{width:100%;height:100%;border:0;background:var(--base)}
+  .stage{flex:1;position:relative;background:#000;overflow-y:auto;overflow-x:hidden}
+  iframe{width:100%;min-height:100%;border:0;background:var(--base);display:block}
   .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);color:var(--dim);font-size:14px}
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100}
   .modal-bg.show{display:flex}
@@ -147,8 +147,17 @@ frame.addEventListener('load',()=>{
   if(doc.body.children.length<2) return; // not real content yet
   if(!doc.getElementById('pl-style')){const st=doc.createElement('style');st.id='pl-style';st.textContent=EDIT_STYLE;doc.head.appendChild(st);}
   injectAll(doc);
+  fitFrame(doc);
   $('loading').style.display='none'; setStatus('ready to edit');
 });
+
+function fitFrame(doc){
+  if(!doc.getElementById('pl-scrollfix')){const s=doc.createElement('style');s.id='pl-scrollfix';s.textContent='html,body{overflow:visible !important;height:auto !important}';doc.head.appendChild(s);}
+  const sync=()=>{try{frame.style.height=Math.max(doc.body.scrollHeight,doc.documentElement.scrollHeight)+'px';}catch(e){}};
+  sync(); setTimeout(sync,300); setTimeout(sync,1000);
+  try{const ro=new ResizeObserver(sync);ro.observe(doc.body);}catch(e){}
+  window.addEventListener('resize',sync);
+}
 
 function mk(el){el.setAttribute('contenteditable','true');el.setAttribute('data-ple','1');}
 function markText(doc){
@@ -226,6 +235,7 @@ function strip(root,forClone){
 function serialize(){
   const doc=frame.contentDocument; const clone=doc.documentElement.cloneNode(true);
   const st=clone.querySelector('#pl-style'); if(st)st.remove();
+  const sf=clone.querySelector('#pl-scrollfix'); if(sf)sf.remove();
   const b=clone.querySelector('body'); if(b)b.removeAttribute('data-pllinks');
   strip(clone,false);
   return '<!DOCTYPE html>\n'+clone.outerHTML;
