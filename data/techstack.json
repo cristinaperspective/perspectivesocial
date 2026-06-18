@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "name": "Claude",
+      "image": "/images/tech/claude.svg",
+      "link": "https://claude.ai"
+    },
+    {
+      "name": "OpenAI",
+      "image": "/images/tech/openai.svg",
+      "link": "https://openai.com"
+    },
+    {
+      "name": "Meta",
+      "image": "/images/tech/meta.svg",
+      "link": "https://about.meta.com"
+    },
+    {
+      "name": "Google",
+      "image": "/images/tech/google.svg",
+      "link": "https://google.com"
+    },
+    {
+      "name": "TikTok",
+      "image": "/images/tech/tiktok.svg",
+      "link": "https://www.tiktok.com"
+    },
+    {
+      "name": "Klaviyo",
+      "image": "/images/tech/klaviyo.svg",
+      "link": "https://www.klaviyo.com"
+    },
+    {
+      "name": "Shopify",
+      "image": "/images/tech/shopify.svg",
+      "link": "https://www.shopify.com"
+    }
+  ]
+}
