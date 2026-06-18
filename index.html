@@ -90,7 +90,7 @@
   /* PARTNERS */
   .partners{background:var(--dark);color:var(--white);padding:70px 0;text-align:center;}
   .partners-label{font-size:12px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage);margin-bottom:30px;}
-  .partners-row{display:flex;align-items:center;justify-content:center;gap:clamp(24px,5vw,56px);flex-wrap:wrap;}
+  .partners-row{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
   .partners-row .p{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(20px,2.6vw,30px);text-transform:uppercase;letter-spacing:0.06em;color:rgba(245,240,236,0.62);}
 
   /* WHY US */
@@ -171,7 +171,14 @@
     .services-grid{grid-template-columns:1fr;}
   }
 #rotWord{display:inline-block;transition:opacity .25s ease,transform .25s ease}
-.partners-row .tech-logo{display:inline-flex;align-items:center}.partners-row .tech-logo img{height:30px;width:auto;opacity:.72;transition:opacity .2s}.partners-row .tech-logo:hover img{opacity:1}
+.partners-row .tech-logo{display:inline-flex;flex-direction:column;align-items:center;gap:12px;flex:1 1 0;min-width:84px}.partners-row .tech-logo img{height:32px;width:auto;opacity:.72;transition:opacity .2s}.partners-row .tech-logo:hover img{opacity:1}.partners-row .tech-logo span{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,236,.55)}
+
+.press-marquee{overflow:hidden;margin-top:30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
+.press-track{display:flex;gap:clamp(32px,5vw,60px);width:max-content;animation:pressScroll 60s linear infinite;align-items:center;}
+.press-track:hover{animation-play-state:paused;}
+.press-track .pub{font-family:'Anton',sans-serif;font-size:clamp(19px,2.4vw,30px);letter-spacing:.01em;color:var(--dark);opacity:.6;white-space:nowrap;}
+.press-track .pub.serif{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-style:italic;}
+@keyframes pressScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 </style>
 <link rel="canonical" href="https://perspectivesocial.com/">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -240,12 +247,7 @@
   <section class="press">
     <div class="container">
       <p class="press-label">get featured in</p>
-      <div class="press-row">
-        <span class="pub serif">The Irish Times</span>
-        <span class="pub serif">Irish Independent</span>
-        <span class="pub">RTÉ</span>
-        <span class="pub serif">Business Post</span>
-      </div>
+      <div class="press-marquee" aria-hidden="true"><div class="press-track" id="pressTrack"><span class="pub serif">The Irish Times</span><span class="pub serif">Irish Independent</span><span class="pub">RTÉ</span><span class="pub serif">Business Post</span><span class="pub serif">Forbes</span><span class="pub">Business Insider</span><span class="pub">Entrepreneur</span><span class="pub">USA Today</span><span class="pub">Yahoo News</span><span class="pub">Digital Journal</span><span class="pub serif">International Business Times</span><span class="pub serif">Above the Law</span><span class="pub">Healthline</span><span class="pub serif">Law.com</span><span class="pub serif">Automotive News</span><span class="pub">Motor1</span><span class="pub serif">The Irish Times</span><span class="pub serif">Irish Independent</span><span class="pub">RTÉ</span><span class="pub serif">Business Post</span><span class="pub serif">Forbes</span><span class="pub">Business Insider</span><span class="pub">Entrepreneur</span><span class="pub">USA Today</span><span class="pub">Yahoo News</span><span class="pub">Digital Journal</span><span class="pub serif">International Business Times</span><span class="pub serif">Above the Law</span><span class="pub">Healthline</span><span class="pub serif">Law.com</span><span class="pub serif">Automotive News</span><span class="pub">Motor1</span></div></div>
     </div>
   </section>
 
@@ -291,13 +293,13 @@
 <div class="container">
 <p class="partners-label">Tech stack</p>
 <div class="partners-row" id="techStack">
-<a href="https://claude.ai" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/claude.svg" alt="Claude"></a>
-<a href="https://openai.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/openai.svg" alt="OpenAI"></a>
-<a href="https://about.meta.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/meta.svg" alt="Meta"></a>
-<a href="https://google.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/google.svg" alt="Google"></a>
-<a href="https://www.tiktok.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/tiktok.svg" alt="TikTok"></a>
-<a href="https://www.klaviyo.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/klaviyo.svg" alt="Klaviyo"></a>
-<a href="https://www.shopify.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/shopify.svg" alt="Shopify"></a>
+<a href="https://claude.ai" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/claude.svg" alt="Claude"><span>Claude</span></a>
+<a href="https://openai.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/openai.svg" alt="OpenAI"><span>OpenAI</span></a>
+<a href="https://about.meta.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/meta.svg" alt="Meta"><span>Meta</span></a>
+<a href="https://google.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/google.svg" alt="Google"><span>Google</span></a>
+<a href="https://www.tiktok.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/tiktok.svg" alt="TikTok"><span>TikTok</span></a>
+<a href="https://www.klaviyo.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/klaviyo.svg" alt="Klaviyo"><span>Klaviyo</span></a>
+<a href="https://www.shopify.com" target="_blank" rel="noopener" class="tech-logo"><img src="/images/tech/shopify.svg" alt="Shopify"><span>Shopify</span></a>
 </div>
 </div>
 </section><section class="why" id="why">
@@ -445,4 +447,6 @@
 
 
 <div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div><script>(function(){var w=["CONVERTS.","SELLS.","SCALES.","GROWS."],i=0,el=document.getElementById("rotWord");if(!el)return;setInterval(function(){el.style.opacity="0";el.style.transform="translateY(8px)";setTimeout(function(){i=(i+1)%w.length;el.textContent=w[i];el.style.opacity="1";el.style.transform="translateY(0)";},260);},2200);})();</script>
-<div style="all: initial;"></div><div style="all: initial;"></div></body><div style="all: initial;"></div></html>
+<div style="all: initial;"></div><div style="all: initial;"></div>
+<script>(function(){function rt(items){var el=document.getElementById("techStack");if(!el||!items||!items.length)return;el.innerHTML=items.map(function(t){return '<a href="'+t.link+'" target="_blank" rel="noopener" class="tech-logo"><img src="'+t.image+'" alt="'+t.name+'"><span>'+t.name+'</span></a>';}).join("");}function rp(items){var el=document.getElementById("pressTrack");if(!el||!items||!items.length)return;var one=items.map(function(p){return '<span class="pub'+(p.serif?" serif":"")+'">'+p.name+'</span>';}).join("");el.innerHTML=one+one;}fetch("data/techstack.json").then(function(r){return r.json();}).then(function(d){rt(d.items||d);}).catch(function(){});fetch("data/press.json").then(function(r){return r.json();}).then(function(d){rp(d.items||d);}).catch(function(){});})();</script>
+</body><div style="all: initial;"></div></html>
