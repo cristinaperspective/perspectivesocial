@@ -1,0 +1,68 @@
+{
+  "items": [
+    {
+      "name": "The Irish Times",
+      "serif": true
+    },
+    {
+      "name": "Irish Independent",
+      "serif": true
+    },
+    {
+      "name": "RTÉ",
+      "serif": false
+    },
+    {
+      "name": "Business Post",
+      "serif": true
+    },
+    {
+      "name": "Forbes",
+      "serif": true
+    },
+    {
+      "name": "Business Insider",
+      "serif": false
+    },
+    {
+      "name": "Entrepreneur",
+      "serif": false
+    },
+    {
+      "name": "USA Today",
+      "serif": false
+    },
+    {
+      "name": "Yahoo News",
+      "serif": false
+    },
+    {
+      "name": "Digital Journal",
+      "serif": false
+    },
+    {
+      "name": "International Business Times",
+      "serif": true
+    },
+    {
+      "name": "Above the Law",
+      "serif": true
+    },
+    {
+      "name": "Healthline",
+      "serif": false
+    },
+    {
+      "name": "Law.com",
+      "serif": true
+    },
+    {
+      "name": "Automotive News",
+      "serif": true
+    },
+    {
+      "name": "Motor1",
+      "serif": false
+    }
+  ]
+}
