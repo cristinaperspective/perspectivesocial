@@ -39,6 +39,11 @@
   #login input{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--border);background:var(--base);color:var(--text);font:14px var(--mono);text-align:center;margin-bottom:12px}
   #login button{width:100%;padding:12px;border-radius:8px;border:0;background:var(--lime);color:var(--base);font-weight:700;cursor:pointer}
   #login .err2{color:#FF7B72;font-size:12px;height:16px;margin-top:10px}
+  .lt.active{background:var(--lime);color:var(--base);border-color:var(--lime)}
+  .lrow{border:1px solid var(--border);border-radius:8px;padding:12px 12px 10px;margin-bottom:10px;position:relative;display:flex;flex-direction:column;gap:8px}
+  .lrow label{font-size:11px;color:var(--dim);display:block;margin-bottom:3px}
+  .lrow input,.lrow textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--base);color:var(--text);font:12px var(--mono)}
+  .lrow .rm{position:absolute;top:8px;right:10px;background:none;border:0;color:#FF7B72;cursor:pointer;font-size:15px;width:auto;padding:0}
   @media(max-width:760px){.hint{display:none}}
 </style>
 </head>
@@ -60,6 +65,7 @@
   <span class="spacer"></span>
   <span class="status" id="status">loading…</span>
   <a class="btn" href="blog-admin.html" style="text-decoration:none">Blog ✎</a>
+  <button class="btn" id="btnLists">▦ Lists</button>
   <button class="btn" id="btnLinks">Links</button>
   <button class="btn" id="btnReload">Reload live</button>
   <button class="btn" id="btnDownload">Download</button>
@@ -101,6 +107,21 @@
     <p>Saving changes to the live site. Usually under a minute to appear.</p>
     <div class="log show" id="publishLog"></div>
     <div class="modal-actions"><button class="btn" id="publishClose">Close</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="listsModal">
+  <div class="modal" style="width:min(720px,94vw)">
+    <h2>Content lists</h2>
+    <p>Manage the lists that power the homepage and the Strategic Partners page. Saves straight to the live site.</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn lt active" data-l="press">Get featured in</button>
+      <button class="btn lt" data-l="tech">Tech stack</button>
+      <button class="btn lt" data-l="partners">Strategic Partners</button>
+    </div>
+    <div id="listsBody"></div>
+    <div class="log" id="listsLog"></div>
+    <div class="modal-actions"><button class="btn" id="listsCancel">Close</button><button class="btn primary" id="listsSave">Save this list ↑</button></div>
   </div>
 </div>
 
@@ -253,8 +274,8 @@ function gh(p,o={}){return fetch(API(p),{...o,headers:{'Authorization':'Bearer '
 function logp(m,c=''){const l=$('publishLog');l.innerHTML+=`<span class="${c}">${m}</span>\n`;l.scrollTop=l.scrollHeight;}
 function b64utf8(s){return btoa(unescape(encodeURIComponent(s)));}
 function apiPath(p){return p.split('/').map(encodeURIComponent).join('/');}
-async function getSha(p){const r=await gh(`contents/${apiPath(p)}?ref=${cfg().branch}`);if(r.status===200)return (await r.json()).sha;return null;}
-async function put(p,b64,msg){const sha=await getSha(p);const body={message:msg,content:b64,branch:cfg().branch};if(sha)body.sha=sha;const r=await gh(`contents/${apiPath(p)}`,{method:'PUT',body:JSON.stringify(body)});if(!r.ok)throw new Error(p+': '+r.status+' '+(await r.text()).slice(0,120));}
+async function getSha(p){const r=await gh(`contents/${apiPath(p)}?ref=${cfg().branch}&t=`+Date.now());if(r.status===200)return (await r.json()).sha;return null;}
+async function put(p,b64,msg){for(let a=0;a<2;a++){const sha=await getSha(p);const body={message:msg,content:b64,branch:cfg().branch};if(sha)body.sha=sha;const r=await gh(`contents/${apiPath(p)}`,{method:'PUT',body:JSON.stringify(body)});if(r.ok)return;if(r.status===409&&a===0){await new Promise(res=>setTimeout(res,500));continue;}throw new Error(p+': '+r.status+' '+(await r.text()).slice(0,120));}}
 $('btnPublish').addEventListener('click',async()=>{
   if(!cfg().token){alert('Add a GitHub token in ⚙ Settings first (or use Download).');$('btnSettings').click();return;}
   $('publishLog').innerHTML='';show('publishModal');
@@ -268,6 +289,76 @@ $('btnPublish').addEventListener('click',async()=>{
 function show(id){$(id).classList.add('show');}function hide(id){$(id).classList.remove('show');}
 $('settingsCancel').onclick=()=>hide('settingsModal');$('linksCancel').onclick=()=>hide('linksModal');$('publishClose').onclick=()=>hide('publishModal');
 $('btnReload').onclick=()=>{if(confirm('Reload from live? Unsaved edits lost.'))loadSite();};
+
+// ===== CONTENT LISTS (press / tech stack / strategic partners) =====
+const LISTS={
+  press:{file:'data/press.json',arr:'items',cols:[{k:'name',label:'Publication name'},{k:'serif',label:'Serif / newspaper style',type:'check'}]},
+  tech:{file:'data/techstack.json',arr:'items',cols:[{k:'name',label:'Name'},{k:'image',label:'Logo path (e.g. /images/tech/x.svg)'},{k:'link',label:'Website link'}]},
+  partners:{file:'data/partners.json',arr:'partners',featured:true,cols:[{k:'name',label:'Name'},{k:'category',label:'Category (groups the filter tabs)'},{k:'image',label:'Logo path'},{k:'link',label:'Website link'},{k:'desc',label:'Short description',type:'area'},{k:'slug',label:'Slug / id (auto if blank)'}]}
+};
+let listData={}, curList='press';
+function slugify(s){return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+async function loadList(name){
+  if(listData[name])return listData[name];
+  try{const r=await fetch(RAW(LISTS[name].file));listData[name]=await r.json();}
+  catch(e){listData[name]={[LISTS[name].arr]:[]};}
+  return listData[name];
+}
+async function switchList(name){
+  curList=name; $('listsLog').className='log';
+  document.querySelectorAll('.lt').forEach(b=>b.classList.toggle('active',b.dataset.l===name));
+  $('listsBody').innerHTML='<div style="color:var(--dim);font:12px var(--mono)">loading…</div>';
+  const data=await loadList(name);
+  renderRows(name,(data[LISTS[name].arr]||[]).slice());
+}
+function rowEl(name,row){
+  const c=LISTS[name];const d=document.createElement('div');d.className='lrow';
+  if(c.featured){const fl=document.createElement('label');fl.style.cssText='display:flex;gap:6px;align-items:center;color:var(--lime);margin:0';
+    const fr=document.createElement('input');fr.type='radio';fr.name='pl-featrow';fr.dataset.feat='1';fr.style.width='auto';
+    fr.checked=!!(listData[name]&&listData[name].featured&&row.slug&&listData[name].featured===row.slug);
+    fl.appendChild(fr);fl.appendChild(document.createTextNode('★ Featured partner'));d.appendChild(fl);}
+  c.cols.forEach(col=>{
+    const w=document.createElement('div');const lb=document.createElement('label');lb.textContent=col.label;w.appendChild(lb);
+    let inp;
+    if(col.type==='check'){inp=document.createElement('input');inp.type='checkbox';inp.checked=!!row[col.k];inp.style.width='auto';}
+    else if(col.type==='area'){inp=document.createElement('textarea');inp.rows=2;inp.value=row[col.k]||'';}
+    else{inp=document.createElement('input');inp.value=row[col.k]||'';}
+    inp.dataset.k=col.k;w.appendChild(inp);d.appendChild(w);
+  });
+  const rm=document.createElement('button');rm.className='rm';rm.textContent='✕';rm.title='Remove';rm.onclick=()=>d.remove();d.appendChild(rm);
+  return d;
+}
+function renderRows(name,rows){
+  const c=LISTS[name];const body=$('listsBody');body.innerHTML='';
+  rows.forEach(r=>body.appendChild(rowEl(name,r)));
+  const add=document.createElement('button');add.className='btn';add.textContent='+ Add';add.style.marginTop='4px';
+  add.onclick=()=>{const blank={};c.cols.forEach(col=>blank[col.k]=col.type==='check'?false:'');body.insertBefore(rowEl(name,blank),add);};
+  body.appendChild(add);
+}
+function collectRows(name){
+  const c=LISTS[name];const out=[];let feat=null;
+  $('listsBody').querySelectorAll('.lrow').forEach(d=>{
+    const o={};d.querySelectorAll('[data-k]').forEach(inp=>{o[inp.dataset.k]=inp.type==='checkbox'?inp.checked:inp.value.trim();});
+    if(!(o.name||'').trim())return;
+    if(c.featured&&!o.slug)o.slug=slugify(o.name);
+    const fr=d.querySelector('[data-feat]');if(fr&&fr.checked)feat=o.slug;
+    out.push(o);
+  });
+  return {out,feat};
+}
+async function saveList(){
+  if(!cfg().token){alert('Add a GitHub token in ⚙ Settings first.');$('btnSettings').click();return;}
+  const name=curList,c=LISTS[name];const {out,feat}=collectRows(name);
+  const obj=listData[name]||{};obj[c.arr]=out;if(c.featured)obj.featured=feat||(out[0]&&out[0].slug)||'';
+  listData[name]=obj;
+  const log=$('listsLog');log.className='log show';log.textContent='Saving '+c.file+' …\n';
+  try{await put(c.file,b64utf8(JSON.stringify(obj,null,2)),'Update '+c.file+' via editor');log.textContent+='✓ Saved. Live in ~1 minute.';setStatus('list saved ✓');}
+  catch(e){log.textContent+='Error: '+e.message;setStatus('save failed');}
+}
+$('btnLists').onclick=()=>{listData={};show('listsModal');switchList('press');};
+document.querySelectorAll('.lt').forEach(b=>b.onclick=()=>switchList(b.dataset.l));
+$('listsCancel').onclick=()=>hide('listsModal');
+$('listsSave').onclick=saveList;
 
 async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 async function tryLogin(){const h=await sha256($('pw').value);if(h===PW_HASH){sessionStorage.setItem('pl_auth','1');$('login').style.display='none';loadSite();}else{$('pwErr').textContent='Wrong password';$('pw').value='';}}
