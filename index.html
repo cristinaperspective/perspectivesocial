@@ -169,6 +169,7 @@
     .menu-toggle{display:block;}
     .services-grid{grid-template-columns:1fr;}
   }
+#rotWord{display:inline-block;transition:opacity .25s ease,transform .25s ease}
 </style>
 <link rel="canonical" href="https://perspectivesocial.com/">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -210,7 +211,7 @@
   <section class="hero" id="top">
     <div class="container">
       <p class="eyebrow">SMM · Ads · Content · Digital PR · Events</p>
-      <h1>CONTENT<br>THAT <span class="accent">CONVERTS.</span></h1>
+      <h1>CONTENT<br>THAT <span class="accent" id="rotWord">CONVERTS.</span></h1>
       <p class="hero-sub" id="heroSub">Social presence, paid campaigns, founder stories and ecommerce media for brands that are done with average. One team, every channel, zero fluff.</p>
       <div class="hero-actions">
         <a href="https://calendar.app.google/hm8PjF6P6VYFvWik8" class="btn btn-primary js-book" target="_blank" rel="noopener">Book a Call</a>
@@ -219,17 +220,17 @@
       <div class="hero-foot">
         <span class="item">Founder-Led</span>
         <span class="item">Dublin · Ireland</span>
-        <span class="item">for ambitious brands</span><span class="item"><br></span><span class="item"><br></span>
-      <span class="item"><br></span><span class="item"><br></span></div>
+        <span class="item">for ambitious brands</span>
+      </div>
     </div>
   </section>
 
   <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
-      <span>Social Media Management</span><span>·</span><span>Paid Ads</span><span>·</span><span>Content</span><span>·</span><span>Founder Interviews</span><span>·</span><span>Newsletters</span><span>·</span><span>Podcasts</span><span>·</span><span>Digital PR</span><span>·</span>
-      <span>Social Media Management</span><span>·</span><span>Paid Ads</span><span>·</span><span>Content</span><span>·</span><span>Founder Interviews</span><span>·</span><span>Newsletters</span><span>·</span><span>Podcasts</span><span>·</span><span>Digital PR</span><span>·</span>
-    </div>
+<span>Social Media Management</span><span>·</span><span>Paid Ads</span><span>·</span><span>Content Production</span><span>·</span><span>Influencer Marketing</span><span>·</span><span>Email Marketing</span><span>·</span><span>Podcasts</span><span>·</span><span>Ecommerce Growth</span><span>·</span><span>SEO &amp; GEO</span><span>·</span>
+<span>Social Media Management</span><span>·</span><span>Paid Ads</span><span>·</span><span>Content Production</span><span>·</span><span>Influencer Marketing</span><span>·</span><span>Email Marketing</span><span>·</span><span>Podcasts</span><span>·</span><span>Ecommerce Growth</span><span>·</span><span>SEO &amp; GEO</span><span>·</span>
+</div>
   </div>
 
   <!-- PRESS -->
@@ -245,7 +246,17 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
+<!-- FACTS -->
+<section class="stats">
+<div class="container">
+<div class="stats-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;margin:0 auto;">
+<div class="stat"><div class="num">70+</div><div class="lbl">Clients</div></div>
+<div class="stat"><div class="num">1</div><div class="lbl">Dedicated Team</div></div>
+</div>
+</div>
+</section>
+
+<!-- TESTIMONIALS -->
   <section class="testi">
     <div class="container">
       <div class="testi-head">
@@ -315,11 +326,11 @@
         <div class="svc"><div class="no">01</div><h3>Social Media Management</h3><p>Full-stack SMM - strategy, calendars, posting, community. A feed that works as hard as you do.</p></div>
         <div class="svc"><div class="no">02</div><h3>Paid Ads</h3><p>Meta, TikTok and Google campaigns built for ROAS, not vanity reach.</p></div>
         <div class="svc"><div class="no">03</div><h3>Content Production</h3><p>Short-form video, carousels, photography and copy in your brand's voice.</p></div>
-        <div class="svc"><div class="no">04</div><h3>influencer marketing</h3><p>add text</p></div>
+        <div class="svc"><div class="no">04</div><h3>Influencer Marketing</h3><p>Creator partnerships that actually fit your brand - sourced, briefed and managed end to end.</p></div>
         
-        <div class="svc"><div class="no">06</div><h3>email marketing</h3><p>Email people actually open. Owned audience, compounding returns.</p></div>
-        <div class="svc"><div class="no">07</div><h3>Podcasts</h3><p>From concept to publishing - long-form audio that positions you as the voice of your niche.</p></div>
-        <div class="svc"><div class="no">08</div><h3>Ecommerce GROWTH</h3><p>Product-led content engineered for stores: launches, UGC and creative testing.</p></div><div class="svc"><div class="no">09</div><h3>seo &amp; geo (AI SEO)</h3><p>add text</p></div>
+        <div class="svc"><div class="no">05</div><h3>Email Marketing</h3><p>Email people actually open. Owned audience, compounding returns.</p></div>
+        <div class="svc"><div class="no">06</div><h3>Podcasts</h3><p>From concept to publishing - long-form audio that positions you as the voice of your niche.</p></div>
+        <div class="svc"><div class="no">07</div><h3>Ecommerce Growth</h3><p>Product-led content engineered for stores: launches, UGC and creative testing.</p></div><div class="svc"><div class="no">08</div><h3>SEO &amp; GEO (AI SEO)</h3><p>Get found on Google and inside AI search - content built to rank and to be cited by ChatGPT and Perplexity.</p></div>
       </div>
     </div>
   </section>
@@ -374,10 +385,10 @@
   <!-- CTA / CONTACT -->
   <section class="cta" id="contact">
     <div class="container">
-      <p class="eyebrow" style="color:var(--dark);">Ready to scale?</p>
+      <p class="eyebrow" style="color:var(--dark);">How can we help?</p>
       <h2>LET'S TALK.</h2>
-      <p>add text</p>
-      <a href="https://calendar.app.google/hm8PjF6P6VYFvWik8" class="btn btn-dark js-book" target="_blank" rel="noopener">Book a Call</a>
+      <p>Tell us what you are building and where you want to take it. No pitch, no pressure - just a real conversation about how we can help you grow.</p>
+<a href="https://calendar.app.google/hm8PjF6P6VYFvWik8" class="btn btn-dark js-book" target="_blank" rel="noopener">Book a Call</a>
       <a href="mailto:cristina@perspectivecircle.com" class="cta-email js-email-link">Prefer email? <b id="ctaEmail">cristina@perspectivecircle.com</b></a>
     </div>
   </section>
@@ -428,4 +439,5 @@
   </script>
 
 
-<div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div></body><div style="all: initial;"></div></html>
+<div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div><script>(function(){var w=["CONVERTS.","SELLS.","SCALES.","GROWS."],i=0,el=document.getElementById("rotWord");if(!el)return;setInterval(function(){el.style.opacity="0";el.style.transform="translateY(8px)";setTimeout(function(){i=(i+1)%w.length;el.textContent=w[i];el.style.opacity="1";el.style.transform="translateY(0)";},260);},2200);})();</script>
+</body><div style="all: initial;"></div></html>
