@@ -1,13 +1,4 @@
 {
-  "featured": "loveloyalty",
-  "partners": [
-    {
-      "name": "Love Loyalty",
-      "category": "Loyalty & Retention",
-      "image": "/images/partners/loveloyalty.svg",
-      "link": "https://www.loveloyalty.app/",
-      "desc": "An all-in-one retention platform with an intuitive loyalty points program, VIP tiers, referrals and memberships that turn first-time buyers into regulars.",
-      "slug": "loveloyalty"
-    }
-  ]
+  "featured": "",
+  "partners": []
 }
