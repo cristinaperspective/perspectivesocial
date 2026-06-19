@@ -215,18 +215,7 @@ document.querySelectorAll('#navLinks a').forEach(function(a){a.addEventListener(
 document.getElementById('year').textContent=new Date().getFullYear();
 
 // Seed partners (editable via data/partners.json). image paths reuse the deployed tech logos.
-var SEED={
-featured:"shopify",
-partners:[
-{slug:"shopify",name:"Shopify",category:"Ecommerce",image:"/images/tech/shopify.svg",link:"https://www.shopify.com",desc:"The commerce platform we build, migrate and scale stores on. From first launch to Shopify Plus."},
-{slug:"klaviyo",name:"Klaviyo",category:"Email & SMS",image:"/images/tech/klaviyo.svg",link:"https://www.klaviyo.com",desc:"Email and SMS marketing that turns a first order into repeat revenue. Owned audience, compounding returns."},
-{slug:"meta",name:"Meta",category:"Paid Ads",image:"/images/tech/meta.svg",link:"https://about.meta.com",desc:"Facebook and Instagram advertising built for ROAS, not vanity reach. Where most of our paid budget earns its keep."},
-{slug:"google",name:"Google",category:"Paid Ads",image:"/images/tech/google.svg",link:"https://google.com",desc:"Search, Performance Max and analytics across the funnel, so we know what every euro is actually doing."},
-{slug:"tiktok",name:"TikTok",category:"Social",image:"/images/tech/tiktok.svg",link:"https://www.tiktok.com",desc:"Short-form content and paid social where discovery happens now. The cheapest reach available, used well."},
-{slug:"claude",name:"Claude",category:"AI",image:"/images/tech/claude.svg",link:"https://claude.ai",desc:"The AI we lean on for research, strategy and faster content production, without losing the human voice."},
-{slug:"openai",name:"OpenAI",category:"AI",image:"/images/tech/openai.svg",link:"https://openai.com",desc:"ChatGPT and the wider OpenAI stack for ideation, automation and staying ahead of AI-driven search."}
-]
-};
+var SEED={featured:"loveloyalty",partners:[{slug:"loveloyalty",name:"Love Loyalty",category:"Loyalty & Retention",image:"/images/partners/loveloyalty.svg",link:"https://www.loveloyalty.app/",desc:"An all-in-one retention platform with an intuitive loyalty points program, VIP tiers, referrals and memberships that turn first-time buyers into regulars."}]};
 
 function render(data){
 var partners=data.partners||[];
@@ -262,7 +251,7 @@ b.classList.add('active');draw(b.getAttribute('data-cat'));
 });
 }
 
-fetch('data/partners.json').then(function(r){if(!r.ok)throw 0;return r.json();})
+fetch('/data/partners.json').then(function(r){if(!r.ok)throw 0;return r.json();})
 .then(function(d){render((d&&d.partners&&d.partners.length)?d:SEED);})
 .catch(function(){render(SEED);});
 </script>
