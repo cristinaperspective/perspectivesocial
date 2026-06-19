@@ -317,9 +317,9 @@ $('btnReload').onclick=()=>{if(confirm('Reload from live? Unsaved edits lost.'))
 
 // ===== CONTENT LISTS (press / tech stack / strategic partners) =====
 const LISTS={
-  press:{file:'data/press.json',arr:'items',cols:[{k:'name',label:'Publication name'},{k:'serif',label:'Serif / newspaper style',type:'check'}]},
-  tech:{file:'data/techstack.json',arr:'items',cols:[{k:'name',label:'Name'},{k:'image',label:'Logo path (e.g. /images/tech/x.svg)'},{k:'link',label:'Website link'}]},
-  partners:{file:'data/partners.json',arr:'partners',featured:true,cols:[{k:'name',label:'Name'},{k:'category',label:'Category (groups the filter tabs)'},{k:'image',label:'Logo path'},{k:'link',label:'Website link'},{k:'desc',label:'Short description',type:'area'},{k:'slug',label:'Slug / id (auto if blank)'}]}
+  press:{file:'data/press.json',arr:'items',dir:'images/press',cols:[{k:'name',label:'Publication name'},{k:'serif',label:'Serif / newspaper style',type:'check'}]},
+  tech:{file:'data/techstack.json',arr:'items',dir:'images/tech',cols:[{k:'name',label:'Name'},{k:'image',label:'Logo',type:'image'},{k:'link',label:'Website link'}]},
+  partners:{file:'data/partners.json',arr:'partners',featured:true,dir:'images/partners',cols:[{k:'name',label:'Name'},{k:'category',label:'Category (groups the filter tabs)'},{k:'image',label:'Logo',type:'image'},{k:'link',label:'Website link'},{k:'desc',label:'Short description',type:'area'},{k:'slug',label:'Slug / id (auto if blank)'}]}
 };
 let listData={}, curList='press';
 function slugify(s){return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
@@ -344,6 +344,16 @@ function rowEl(name,row){
     fl.appendChild(fr);fl.appendChild(document.createTextNode('★ Featured partner'));d.appendChild(fl);}
   c.cols.forEach(col=>{
     const w=document.createElement('div');const lb=document.createElement('label');lb.textContent=col.label;w.appendChild(lb);
+    if(col.type==='image'){
+      const prev=document.createElement('img');prev.style.cssText='height:38px;max-width:160px;object-fit:contain;background:#7a7f8a;border-radius:6px;padding:4px;margin:2px 0 6px;display:'+(row[col.k]?'block':'none');if(row[col.k])prev.src=row[col.k];
+      w.appendChild(prev);
+      const inp=document.createElement('input');inp.value=row[col.k]||'';inp.placeholder='click Upload, or paste an image URL/path';inp.dataset.k=col.k;w.appendChild(inp);
+      const up=document.createElement('input');up.type='file';up.accept='image/*';up.style.display='none';
+      const btn=document.createElement('button');btn.type='button';btn.className='btn';btn.textContent='⬆ Upload image';btn.style.marginTop='6px';
+      btn.onclick=()=>up.click();
+      up.onchange=()=>{const f=up.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{d._upload={data:r.result,fname:f.name};prev.src=r.result;prev.style.display='block';inp.value='(new image — saves when you press “Save this list”)';};r.readAsDataURL(f);};
+      w.appendChild(btn);w.appendChild(up);d.appendChild(w);return;
+    }
     let inp;
     if(col.type==='check'){inp=document.createElement('input');inp.type='checkbox';inp.checked=!!row[col.k];inp.style.width='auto';}
     else if(col.type==='area'){inp=document.createElement('textarea');inp.rows=2;inp.value=row[col.k]||'';}
@@ -365,6 +375,7 @@ function collectRows(name){
   $('listsBody').querySelectorAll('.lrow').forEach(d=>{
     const o={};d.querySelectorAll('[data-k]').forEach(inp=>{o[inp.dataset.k]=inp.type==='checkbox'?inp.checked:inp.value.trim();});
     if(!(o.name||'').trim())return;
+    if(d._upload){o._upload=d._upload;if((o.image||'').indexOf('(new image')===0)o.image='';}
     if(c.featured&&!o.slug)o.slug=slugify(o.name);
     const fr=d.querySelector('[data-feat]');if(fr&&fr.checked)feat=o.slug;
     out.push(o);
@@ -374,10 +385,24 @@ function collectRows(name){
 async function saveList(){
   if(!cfg().token){alert('Add a GitHub token in ⚙ Settings first.');$('btnSettings').click();return;}
   const name=curList,c=LISTS[name];const {out,feat}=collectRows(name);
-  const obj=listData[name]||{};obj[c.arr]=out;if(c.featured)obj.featured=feat||(out[0]&&out[0].slug)||'';
-  listData[name]=obj;
   const log=$('listsLog');log.className='log show';log.textContent='Saving '+c.file+' …\n';
-  try{await put(c.file,b64utf8(JSON.stringify(obj,null,2)),'Update '+c.file+' via editor');log.textContent+='✓ Saved. Live in ~1 minute.';setStatus('list saved ✓');}
+  try{
+    for(const o of out){
+      if(o._upload){
+        const ext=((o._upload.fname.split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,''))||'png';
+        const base=(o.slug||slugify(o.name)||'logo');
+        const path=c.dir+'/'+base+'.'+ext;
+        log.textContent+='Uploading '+path+' …\n';
+        await put(path,o._upload.data.split(',')[1],'Upload image '+path);
+        o.image='/'+path+'?v='+Date.now();
+      }
+      delete o._upload;
+    }
+    const obj=listData[name]||{};obj[c.arr]=out;if(c.featured)obj.featured=feat||(out[0]&&out[0].slug)||'';
+    listData[name]=obj;
+    await put(c.file,b64utf8(JSON.stringify(obj,null,2)),'Update '+c.file+' via editor');
+    log.textContent+='✓ Saved. Live in ~1 minute.';setStatus('list saved ✓');
+  }
   catch(e){log.textContent+='Error: '+e.message;setStatus('save failed');}
 }
 $('btnLists').onclick=()=>{listData={};show('listsModal');switchList('press');};
