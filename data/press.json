@@ -22,23 +22,19 @@
     },
     {
       "name": "Business Insider",
-      "serif": false
+      "serif": true
     },
     {
       "name": "Entrepreneur",
-      "serif": false
+      "serif": true
     },
     {
       "name": "USA Today",
-      "serif": false
-    },
-    {
-      "name": "Yahoo News",
-      "serif": false
+      "serif": true
     },
     {
       "name": "Digital Journal",
-      "serif": false
+      "serif": true
     },
     {
       "name": "International Business Times",
@@ -50,10 +46,6 @@
     },
     {
       "name": "Healthline",
-      "serif": false
-    },
-    {
-      "name": "Law.com",
       "serif": true
     },
     {
@@ -62,7 +54,7 @@
     },
     {
       "name": "Motor1",
-      "serif": false
+      "serif": true
     }
   ]
 }
