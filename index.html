@@ -179,6 +179,13 @@
 .press-track .pub{font-family:'Anton',sans-serif;font-size:clamp(19px,2.4vw,30px);letter-spacing:.01em;color:var(--dark);opacity:.6;white-space:nowrap;}
 .press-track .pub.serif{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-style:italic;}
 @keyframes pressScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.bts{background:var(--off-white);padding:90px 0 96px}
+.bts-head{margin-bottom:40px}
+.bts-gallery{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 32px 16px;-webkit-overflow-scrolling:touch}
+.bts-gallery::-webkit-scrollbar{height:8px}.bts-gallery::-webkit-scrollbar-thumb{background:rgba(22,26,23,.2);border-radius:4px}
+.bts-tile{flex:0 0 auto;width:clamp(220px,26vw,300px);aspect-ratio:4/5;border-radius:10px;overflow:hidden;scroll-snap-align:start;background:var(--light-sage);display:block}
+.bts-tile img{width:100%;height:100%;object-fit:cover}
 </style>
 <link rel="canonical" href="https://perspectivesocial.com/">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -335,7 +342,23 @@
     </div>
   </section>
 
-  <!-- WORK -->
+  <section class="bts" id="behind">
+<div class="container">
+<div class="bts-head"><p class="eyebrow">Behind the scenes</p><h2 class="section-title">THE TEAM,<br>AT <span class="accent">WORK.</span></h2></div>
+</div>
+<div class="bts-gallery" id="btsGallery">
+<a class="bts-tile"><img src="images/team/shot-1.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-2.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-3.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-4.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-5.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-6.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-7.svg" alt="Perspective Social behind the scenes"></a>
+<a class="bts-tile"><img src="images/team/shot-8.svg" alt="Perspective Social behind the scenes"></a>
+</div>
+</section>
+
+<!-- WORK -->
   <section class="work" id="work">
     <div class="container">
       <div class="work-head">
