@@ -78,6 +78,21 @@
   <div class="loading" id="loading">Loading your live site…</div>
 </div>
 
+<div id="adjustBar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--bg);border-top:1px solid var(--border);padding:10px 16px;gap:8px;align-items:center;flex-wrap:wrap">
+  <b style="font:600 12px/1 var(--mono);color:var(--lime)">⤢ Adjust image</b>
+  <button class="btn" id="adjMinus">– size</button>
+  <button class="btn" id="adjPlus">+ size</button>
+  <span style="width:6px"></span>
+  <button class="btn" id="adjL">←</button>
+  <button class="btn" id="adjU">↑</button>
+  <button class="btn" id="adjD">↓</button>
+  <button class="btn" id="adjR">→</button>
+  <span style="width:6px"></span>
+  <button class="btn" id="adjReset">Reset</button>
+  <button class="btn primary" id="adjDone">Done</button>
+  <span class="hint">+ size enlarges a logo · arrows re-center a photo within its frame</span>
+</div>
+
 <div class="modal-bg" id="settingsModal">
   <div class="modal">
     <h2>Publish settings</h2>
@@ -154,7 +169,10 @@ const EDIT_STYLE=`
   .pl-ui button:hover,.pl-sec button:hover{border-color:#C8FF00;color:#C8FF00}
   .pl-ui .pl-del:hover,.pl-sec .pl-del:hover{border-color:#FF7B72;color:#FF7B72}
   .pl-add{display:block;margin:14px auto;font:700 12px/1 sans-serif;background:#C8FF00;color:#09070F;border:0;border-radius:6px;padding:9px 16px;cursor:pointer}
-  .pl-imgtag{position:absolute;top:6px;left:6px;background:#C8FF00;color:#09070F;font:600 11px/1 sans-serif;padding:5px 9px;border-radius:6px;z-index:2147483000;pointer-events:none}`;
+  .pl-imgtag{position:absolute;top:6px;left:6px;background:#C8FF00;color:#09070F;font:600 11px/1 sans-serif;padding:5px 9px;border-radius:6px;z-index:2147483000;pointer-events:none}
+  .pl-imgbar{position:absolute;top:6px;left:6px;display:flex;gap:4px;z-index:2147483000}
+  .pl-ibtn{font:600 11px/1 sans-serif;background:#C8FF00;color:#09070F;border:0;border-radius:6px;padding:5px 8px;cursor:pointer}
+  .pl-ibtn:hover{background:#fff}`;
 
 const BLOCK='h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,td,th,dt,dd,summary';
 
@@ -193,7 +211,14 @@ function setupImg(doc,img){
   img.setAttribute('data-plimg','1'); img.setAttribute('data-plsrc',src); img.setAttribute('data-plname',path);
   let wrap=img.parentElement;
   if(wrap && getComputedStyle(wrap).position==='static') wrap.style.position='relative';
-  if(wrap && !wrap.querySelector('.pl-imgtag')){const t=doc.createElement('div');t.className='pl-imgtag';t.textContent='Replace';wrap.appendChild(t);}
+  if(wrap && !wrap.querySelector('.pl-imgbar')){
+    const bar=doc.createElement('div');bar.className='pl-imgbar';bar.setAttribute('contenteditable','false');
+    const rb=doc.createElement('button');rb.type='button';rb.className='pl-ibtn';rb.textContent='Replace';
+    rb.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();pendingImgEl=img;$('imgPicker').click();});
+    const ab=doc.createElement('button');ab.type='button';ab.className='pl-ibtn';ab.textContent='⤢ Adjust';
+    ab.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();openAdjust(img);});
+    bar.appendChild(rb);bar.appendChild(ab);wrap.appendChild(bar);
+  }
   img.addEventListener('click',()=>{ pendingImgEl=img; $('imgPicker').click(); });
 }
 function mkbtn(doc,label,cls,fn){const b=doc.createElement('button');b.type='button';b.textContent=label;if(cls)b.className=cls;b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();fn();});return b;}
@@ -244,7 +269,7 @@ function dup(doc,it){const cl=it.cloneNode(true);strip(cl,true);cl.removeAttribu
 $('imgPicker').addEventListener('change',e=>{const f=e.target.files[0];if(!f||!pendingImgEl)return;const r=new FileReader();r.onload=()=>{const name=pendingImgEl.getAttribute('data-plname');pendingImgEl.src=r.result;changedImages[name]=r.result;setStatus('photo staged');};r.readAsDataURL(f);e.target.value='';});
 
 function strip(root,forClone){
-  root.querySelectorAll('.pl-ui,.pl-sec,.pl-add,.pl-imgtag').forEach(n=>n.remove());
+  root.querySelectorAll('.pl-ui,.pl-sec,.pl-add,.pl-imgtag,.pl-imgbar').forEach(n=>n.remove());
   root.querySelectorAll('[data-plimg]').forEach(img=>{const s=img.getAttribute('data-plsrc');const nm=img.getAttribute('data-plname');if(s!==null){let out=s;if(nm&&changedImages[nm])out=s.split('?')[0]+'?v='+Date.now();img.setAttribute('src',out);}img.removeAttribute('data-plimg');img.removeAttribute('data-plsrc');img.removeAttribute('data-plname');});
   root.querySelectorAll('[data-plskip]').forEach(e=>e.removeAttribute('data-plskip'));
   root.querySelectorAll('[data-ple]').forEach(e=>{e.removeAttribute('contenteditable');e.removeAttribute('data-ple');});
@@ -359,6 +384,28 @@ $('btnLists').onclick=()=>{listData={};show('listsModal');switchList('press');};
 document.querySelectorAll('.lt').forEach(b=>b.onclick=()=>switchList(b.dataset.l));
 $('listsCancel').onclick=()=>hide('listsModal');
 $('listsSave').onclick=saveList;
+
+// ===== ADJUST IMAGE (reframe / resize / realign any photo or logo) =====
+let activeAdj=null;
+function isCover(img){try{return frame.contentWindow.getComputedStyle(img).objectFit==='cover';}catch(e){return false;}}
+function adjGet(img){return {z:parseFloat(img.dataset.pz||'1'),x:parseFloat(img.dataset.px||'50'),y:parseFloat(img.dataset.py||'50')};}
+function adjApply(img){const s=adjGet(img);
+  if(isCover(img)){img.style.objectFit='cover';img.style.objectPosition=s.x+'% '+s.y+'%';img.style.transform='scale('+s.z+')';img.style.transformOrigin=s.x+'% '+s.y+'%';
+    const p=img.parentElement;if(p){p.style.overflow='hidden';try{if(frame.contentWindow.getComputedStyle(p).position==='static')p.style.position='relative';}catch(e){}}}
+  else{const tx=(s.x-50),ty=(s.y-50);img.style.transform='translate('+tx+'px,'+ty+'px) scale('+s.z+')';img.style.transformOrigin='center';}
+}
+function adjNudge(dz,dx,dy){if(!activeAdj)return;const s=adjGet(activeAdj);
+  s.z=Math.max(0.3,Math.min(4,+(s.z+dz).toFixed(2)));s.x=Math.max(0,Math.min(100,s.x+dx));s.y=Math.max(0,Math.min(100,s.y+dy));
+  activeAdj.dataset.pz=s.z;activeAdj.dataset.px=s.x;activeAdj.dataset.py=s.y;adjApply(activeAdj);setStatus('image adjusted');}
+function openAdjust(img){activeAdj=img;$('adjustBar').style.display='flex';setStatus('adjusting image');}
+$('adjPlus').onclick=()=>adjNudge(0.1,0,0);
+$('adjMinus').onclick=()=>adjNudge(-0.1,0,0);
+$('adjL').onclick=()=>adjNudge(0,-3,0);
+$('adjR').onclick=()=>adjNudge(0,3,0);
+$('adjU').onclick=()=>adjNudge(0,0,-3);
+$('adjD').onclick=()=>adjNudge(0,0,3);
+$('adjReset').onclick=()=>{if(!activeAdj)return;activeAdj.dataset.pz=1;activeAdj.dataset.px=50;activeAdj.dataset.py=50;activeAdj.style.transform='';activeAdj.style.objectPosition='';adjApply(activeAdj);setStatus('image reset');};
+$('adjDone').onclick=()=>{$('adjustBar').style.display='none';activeAdj=null;setStatus('ready to edit');};
 
 async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 async function tryLogin(){const h=await sha256($('pw').value);if(h===PW_HASH){sessionStorage.setItem('pl_auth','1');$('login').style.display='none';loadSite();}else{$('pwErr').textContent='Wrong password';$('pw').value='';}}
