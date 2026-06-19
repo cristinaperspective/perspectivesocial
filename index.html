@@ -429,7 +429,7 @@
 
     // Pull live content from the CMS data files (keeps Site Settings + Portfolio editable)
     fetch('data/settings.json').then(function(r){return r.json();}).then(function(s){
-      if(s.hero_subtitle){document.getElementById('heroSub').textContent=s.hero_subtitle;}
+      /* hero subtitle stays inline-editable */
       if(s.booking_url){document.querySelectorAll('.js-book').forEach(function(b){b.setAttribute('href',s.booking_url);b.setAttribute('target','_blank');b.setAttribute('rel','noopener');});}
       if(s.contact_email){
         document.getElementById('ctaEmail').textContent=s.contact_email;
@@ -447,7 +447,7 @@
         var link=c.link?'<a href="'+c.link+'" target="_blank" rel="noopener" class="work-link">'+(c.link_label||'View Project')+' &rarr;</a>':'';
         return '<div class="work-card">'+img+'<div class="body"><div class="work-tags">'+tags+'</div><h3>'+c.name+'</h3><p>'+(c.description||'')+'</p>'+link+'</div></div>';
       }).join('');
-      document.getElementById('workGrid').innerHTML=html;
+      if(!document.getElementById('workGrid').children.length){document.getElementById('workGrid').innerHTML=html;}
     }).catch(function(){});
   </script>
 
