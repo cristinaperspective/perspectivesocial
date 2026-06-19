@@ -194,6 +194,7 @@ frame.addEventListener('load',()=>{
   if(doc.body.children.length<2) return; // not real content yet
   if(!doc.getElementById('pl-style')){const st=doc.createElement('style');st.id='pl-style';st.textContent=EDIT_STYLE;doc.head.appendChild(st);}
   injectAll(doc);
+  try{var _w=frame.contentWindow;var _m=_w.setInterval(function(){},1000000);for(var _i=1;_i<=_m;_i++){_w.clearInterval(_i);_w.clearTimeout(_i);}}catch(e){}
   fitFrame(doc);
   $('loading').style.display='none'; setStatus('ready to edit');
 });
