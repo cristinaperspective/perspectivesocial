@@ -178,7 +178,14 @@ const BLOCK='h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,td,th,dt,dd,summary';
 
 async function loadSite(){
   $('loading').style.display='flex'; setStatus('loading…'); changedImages={};
-  try{ const r=await fetch(RAW('index.html')); if(!r.ok)throw new Error('HTTP '+r.status); frame.srcdoc=await r.text(); }
+  try{
+    let html=null;
+    if(cfg().token){
+      try{const r=await gh(`contents/index.html?ref=${cfg().branch}&t=`+Date.now());if(r.ok){const j=await r.json();html=decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));}}catch(e){}
+    }
+    if(html==null){const r=await fetch(RAW('index.html')); if(!r.ok)throw new Error('HTTP '+r.status); html=await r.text();}
+    frame.srcdoc=html;
+  }
   catch(e){ setStatus('load failed'); $('loading').textContent='Could not load the live site.'; }
 }
 frame.addEventListener('load',()=>{
@@ -385,7 +392,10 @@ function collectRows(name){
 async function saveList(){
   if(!cfg().token){alert('Add a GitHub token in ⚙ Settings first.');$('btnSettings').click();return;}
   const name=curList,c=LISTS[name];const {out,feat}=collectRows(name);
-  const log=$('listsLog');log.className='log show';log.textContent='Saving '+c.file+' …\n';
+  const log=$('listsLog');log.className='log show';
+  const prevCount=((listData[name]&&listData[name][c.arr])||[]).length;
+  if(out.length===0 && prevCount>0){log.textContent='Save skipped: the list is empty (it may still be loading). Your saved data was NOT overwritten. Close this, reopen the tab, and try again.';setStatus('save skipped');return;}
+  log.textContent='Saving '+c.file+' …\n';
   try{
     for(const o of out){
       if(o._upload){
