@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+<rect width="800" height="1000" fill="#DDE9DF"/>
+<rect x="1" y="1" width="798" height="998" fill="none" stroke="#A8C0AD" stroke-width="2" stroke-dasharray="14 12"/>
+<g fill="none" stroke="#7A9E84" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+<rect x="300" y="430" width="200" height="150" rx="16"/>
+<circle cx="400" cy="505" r="40"/>
+<path d="M348 430 l18 -30 h68 l18 30"/>
+</g>
+<text x="400" y="650" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="3" fill="#2C332E" text-anchor="middle">ADD YOUR PHOTO</text>
+<text x="400" y="690" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#7A9E84" text-anchor="middle">click to replace in the editor</text>
+</svg>
