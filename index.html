@@ -129,7 +129,7 @@
   /* TEAM */
   .team{background:var(--off-white);padding:104px 0;}
   .team-head{margin-bottom:54px;}
-  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  .team-grid{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px;}.team-grid::-webkit-scrollbar{display:none;}.team-grid .team-card{flex:0 0 220px;scroll-snap-align:start;}.team-marquee{overflow:hidden;}.team-marquee .team-track{display:flex;gap:24px;width:max-content;animation:teamScroll 38s linear infinite;}.team-marquee .team-track:hover{animation-play-state:paused;}@keyframes teamScroll{from{transform:translateX(0);}to{transform:translateX(calc(-50% - 12px));}}@media(max-width:700px){.team-grid .team-card{flex:0 0 70%;}}
   .team-card{text-align:center;}
   .team-photo{position:relative;aspect-ratio:1/1;border-radius:8px;background:var(--sage);display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .team-photo .mono{font-family:'Anton',sans-serif;font-size:64px;color:var(--white);}
@@ -463,4 +463,6 @@
 <div style="all: initial;"></div><div style="all: initial;"></div>
 <script>/*svcAutoSlide*/(function(){var sl=document.querySelectorAll(".svc-slider");sl.forEach(function(s,i){var n=s.children.length;if(n<2)return;var c=0;setInterval(function(){c=(c+1)%n;s.scrollTo({left:c*s.clientWidth,behavior:"smooth"});},3600+i*220);});})();</script>
 <div style="all: initial;"></div><div style="all: initial;"></div><div style="all: initial;"></div>
-<div style="all: initial;"></div></body><div style="all: initial;"></div></html>
+<div style="all: initial;"></div>
+<!--team-marquee--><script>(function(){if(window.self!==window.top)return;var g=document.querySelector('.team-grid');if(!g)return;var cards=Array.prototype.slice.call(g.children);if(cards.length<4)return;var t=document.createElement('div');t.className='team-track';cards.forEach(function(c){t.appendChild(c);});cards.forEach(function(c){var cl=c.cloneNode(true);cl.setAttribute('aria-hidden','true');t.appendChild(cl);});g.appendChild(t);g.classList.add('team-marquee');})();</script>
+</body><div style="all: initial;"></div></html>
