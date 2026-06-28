@@ -187,9 +187,9 @@
 .bts-tile{flex:0 0 auto;width:clamp(220px,26vw,300px);aspect-ratio:4/5;border-radius:10px;overflow:hidden;scroll-snap-align:start;background:var(--light-sage);display:block}
 .bts-tile img{width:100%;height:100%;object-fit:cover}
 
-.svc-slider{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;aspect-ratio:16/11;border-radius:8px;margin-bottom:18px;background:var(--light-sage);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.svc-slider{display:flex;gap:4px;aspect-ratio:16/11;border-radius:8px;margin-bottom:18px;background:var(--light-sage);overflow:hidden}
 .svc-slider::-webkit-scrollbar{display:none}
-.svc-slider img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;display:block}
+.svc-slider img{flex:1 1 0;min-width:0;width:auto;height:100%;object-fit:cover;display:block;border-radius:4px}
 .svc:hover .svc-slider{background:var(--charcoal)}
 .footer-nav{display:flex;gap:22px;flex-wrap:wrap}
 .footer-nav a{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,240,236,0.7);transition:color .2s}
