@@ -262,7 +262,7 @@ function detectGroups(doc){
     kids.forEach(it=>{ if(!it.hasAttribute('data-plitem')) addItemUI(doc,it,c,tag,cls); });
     if(!c.nextElementSibling || !c.nextElementSibling.classList || !c.nextElementSibling.classList.contains('pl-add')){
       const add=doc.createElement('button');add.className='pl-add';add.type='button';add.textContent='+ Add';
-      add.addEventListener('click',()=>{const last=[...c.children].filter(k=>k.tagName===tag&&k.className===cls).pop();if(!last)return;const cl=last.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');cl.querySelectorAll('img').forEach(function(im){im.setAttribute('src','images/uploads/new-'+Date.now()+'-'+Math.floor(Math.random()*99999)+'.png');im.removeAttribute('data-plimg');im.removeAttribute('data-plsrc');im.removeAttribute('data-plname');});c.appendChild(cl);injectAll(doc);});
+      add.addEventListener('click',()=>{const last=[...c.children].filter(k=>k.tagName===tag&&k.className===cls).pop();if(!last)return;const cl=last.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');cl.querySelectorAll('img').forEach(function(im){im.setAttribute('src','images/services/placeholder.svg');im.removeAttribute('data-plimg');im.removeAttribute('data-plsrc');im.removeAttribute('data-plname');});c.appendChild(cl);injectAll(doc);});
       c.insertAdjacentElement('afterend',add);
     }
   });
@@ -274,7 +274,7 @@ function injectAll(doc){
   doc.querySelectorAll('section').forEach(sec=>{if(!sec.hasAttribute('data-plsec'))addSecUI(doc,sec);});
   detectGroups(doc);
 }
-function dup(doc,it){const cl=it.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');cl.querySelectorAll('img').forEach(function(im){im.setAttribute('src','images/uploads/new-'+Date.now()+'-'+Math.floor(Math.random()*99999)+'.png');im.removeAttribute('data-plimg');im.removeAttribute('data-plsrc');im.removeAttribute('data-plname');});it.after(cl);injectAll(doc);}
+function dup(doc,it){const cl=it.cloneNode(true);strip(cl,true);cl.removeAttribute('data-plitem');cl.querySelectorAll('img').forEach(function(im){im.setAttribute('src','images/services/placeholder.svg');im.removeAttribute('data-plimg');im.removeAttribute('data-plsrc');im.removeAttribute('data-plname');});it.after(cl);injectAll(doc);}
 $('imgPicker').addEventListener('change',e=>{const f=e.target.files[0];if(!f||!pendingImgEl)return;const r=new FileReader();r.onload=()=>{const name='images/uploads/u'+Date.now()+Math.floor(Math.random()*99999)+'.png';pendingImgEl.setAttribute('data-plname',name);pendingImgEl.setAttribute('data-plsrc',name);pendingImgEl.removeAttribute('onerror');pendingImgEl.style.opacity='';pendingImgEl.src=r.result;changedImages[name]=r.result;setStatus('photo staged');};r.readAsDataURL(f);e.target.value='';});
 
 function strip(root,forClone){
