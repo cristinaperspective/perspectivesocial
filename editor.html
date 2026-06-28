@@ -253,7 +253,7 @@ function moveSec(sec,d){let s=d<0?sec.previousElementSibling:sec.nextElementSibl
 function detectGroups(doc){
   doc.querySelectorAll('*').forEach(c=>{
     if(c.hasAttribute('data-plgrp'))return; if(c.closest('.pl-ui,.pl-sec'))return;
-    const kids=[...c.children].filter(k=>k.nodeType===1 && !k.classList.contains('pl-add'));
+    const kids=[...c.children].filter(k=>k.nodeType===1 && !k.classList.contains('pl-add') && !k.classList.contains('pl-imgbar') && !k.classList.contains('pl-ui'));
     if(kids.length<3) return;
     const tag=kids[0].tagName, cls=kids[0].className;
     if(typeof cls!=='string'||!cls.trim()) return;
