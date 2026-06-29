@@ -56,7 +56,7 @@
 
   /* MARQUEE */
   .marquee{background:var(--orange);overflow:hidden;padding:15px 0;}
-  .marquee-track{display:flex;gap:48px;white-space:nowrap;width:max-content;animation:scroll 30s linear infinite;}
+  .marquee-track{display:flex;gap:48px;white-space:nowrap;width:max-content;animation:scroll 30s linear infinite;animation-play-state:paused;}.marquee-track:hover{animation-play-state:running;}@media(hover:none){.marquee-track{animation-play-state:running;}}
   .marquee-track span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;color:var(--white);}
   @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
@@ -174,8 +174,8 @@
 .partners-row .tech-logo{display:inline-flex;flex-direction:column;align-items:center;gap:12px;flex:1 1 0;min-width:84px}.partners-row .tech-logo img{height:32px;width:auto;opacity:.72;transition:opacity .2s}.partners-row .tech-logo:hover img{opacity:1}.partners-row .tech-logo span{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,236,.55)}
 
 .press-marquee{overflow:hidden;margin-top:30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
-.press-track{display:flex;gap:clamp(32px,5vw,60px);width:max-content;animation:pressScroll 60s linear infinite;align-items:center;}
-.press-track:hover{animation-play-state:paused;}
+.press-track{display:flex;gap:clamp(32px,5vw,60px);width:max-content;animation:pressScroll 60s linear infinite;align-items:center;animation-play-state:paused;}@media(hover:none){.press-track{animation-play-state:running;}}
+.press-track:hover{animation-play-state:running;}
 .press-track .pub{font-family:'Anton',sans-serif;font-size:clamp(19px,2.4vw,30px);letter-spacing:.01em;color:var(--dark);opacity:.6;white-space:nowrap;}
 .press-track .pub.serif{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-style:italic;}
 @keyframes pressScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
