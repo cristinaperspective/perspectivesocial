@@ -1,0 +1,5 @@
+# HTML pages: always revalidate so edits appear instantly
+/
+  Cache-Control: no-cache
+/blog/*
+  Cache-Control: no-cache
